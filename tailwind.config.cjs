@@ -1,16 +1,16 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./index.html','./src/**/*.{js,jsx}'],
+  content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
       colors: {
-        primary: '#2B6CB0', // blue
-        accent: '#F6E05E' // yellow
+        primary: '#2B6CB0', // azul
+        accent: '#F6E05E',  // amarelo
       },
       borderRadius: {
-        xl2: '1rem'
-      }
-      
+        '2xl': '1rem',
+      },
     },
   },
   plugins: [],
-}
+};
