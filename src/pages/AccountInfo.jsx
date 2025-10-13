@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import FormCard from '../components/FormCard'
 
-export default function AccountInfo({ name = '', email = '', birthDate = '', phone = '', avatar = '/logo192.png', onSave, onCancel }) {
+export default function AccountInfo({ name = '', email = '', birthDate = '', phone = '', avatar = '/logo_fixhub.png', onSave, onCancel }) {
   const [form, setForm] = useState({
     name,
     email,

@@ -8,7 +8,7 @@ export default function Login(){
     <div className="py-6">
       <FormCard title="Tela Login">
         <div className="text-center">
-          <img src="/logo192.png" className="mx-auto w-24" alt="logo"/>
+          <img src="logo_fixhub.png" className="mx-auto w-24" alt="logo"/>
         </div>
         <div className="space-y-2">
           <div>
