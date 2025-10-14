@@ -5,6 +5,7 @@ export default function ReportCreate() {
   const [selectedLocation, setSelectedLocation] = useState("")
   const [selectedArea, setSelectedArea] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("")
+  const [otherCategory, setOtherCategory] = useState("")
   const [description, setDescription] = useState("")
   const [image, setImage] = useState(null)
   const [preview, setPreview] = useState(null)
@@ -20,7 +21,8 @@ export default function ReportCreate() {
     "Elevador",
     "Escada Rolante",
     "Estacionamento",
-    "Praça de Alimentação"
+    "Praça de Alimentação",
+    "Outros"
   ]
 
   const handleImageChange = (e) => {
@@ -33,11 +35,12 @@ export default function ReportCreate() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // Aqui você pode integrar com backend (API)
+    const categoriaFinal = selectedCategory === "Outros" ? otherCategory : selectedCategory
+
     const reportData = {
       selectedLocation,
       selectedArea,
-      selectedCategory,
+      selectedCategory: categoriaFinal,
       description,
       image
     }
@@ -76,6 +79,20 @@ export default function ReportCreate() {
             {selectedArea &&
               renderSelect("Categoria", categories, "Selecione uma categoria", selectedCategory, setSelectedCategory, false)
             }
+
+            {/* Campo "Outros" */}
+            {selectedCategory === "Outros" && (
+              <div className="mb-4">
+                <label className="block font-medium text-sm mb-1">Descreva Outros</label>
+                <input
+                  type="text"
+                  className="w-full border rounded-lg p-2 focus:ring focus:ring-blue-300"
+                  placeholder="Descreva a categoria"
+                  value={otherCategory}
+                  onChange={(e) => setOtherCategory(e.target.value)}
+                />
+              </div>
+            )}
 
             {/* Descrição */}
             <div>
@@ -117,6 +134,7 @@ export default function ReportCreate() {
                   setSelectedLocation("")
                   setSelectedArea("")
                   setSelectedCategory("")
+                  setOtherCategory("")
                   setDescription("")
                   setImage(null)
                   setPreview(null)
