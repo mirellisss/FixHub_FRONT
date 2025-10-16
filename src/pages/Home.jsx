@@ -14,7 +14,6 @@ export default function Home(){
             <div>
               <div className="text-sm text-slate-500">Bem-vinda,</div>
               <div className="font-semibold text-[var(--primary)]">José da Silva Correia</div>
-              <div className="text-xs text-slate-500">ze.correia94@gmail.com</div>
             </div>
           </div>
         </div>

@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import FormCard from '../components/FormCard'
-import { FaGoogle, FaFacebook } from 'react-icons/fa'
 
 export default function Login(){
   return (
@@ -23,11 +22,6 @@ export default function Login(){
           <div className="flex justify-between items-center mt-2">
             <Link to="/register" className="text-sm text-slate-600">Cadastrar-se</Link>
             <Link to="/success" className="btn-primary">Login</Link>
-          </div>
-          <div className="text-center text-xs text-slate-500">ou entre com</div>
-          <div className="flex gap-2 justify-center">
-            <button className="btn-accent px-3 py-2 rounded-full"><FaGoogle/></button>
-            <button className="btn-accent px-3 py-2 rounded-full"><FaFacebook/></button>
           </div>
         </div>
       </FormCard>

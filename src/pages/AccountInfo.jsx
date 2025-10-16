@@ -38,23 +38,25 @@ export default function AccountInfo({ name = '', email = '', birthDate = '', pho
   return (
     <div className="py-6">
       <FormCard title="Informações da Conta">
-        <div className="flex gap-4 items-center mb-4">
-          <label>
-            <img src={preview} className="w-20 h-20 rounded-full object-cover" alt="Avatar do usuário"/>
+        {/* MODIFICAÇÃO: flex-col e items-center para centralizar verticalmente */}
+        <div className="flex flex-col items-center gap-4 mb-4">
+          <label className="cursor-pointer flex flex-col items-center">
+            <img src={preview} className="w-20 h-20 rounded-full object-cover mb-1" alt="Avatar do usuário"/>
             <input
               type="file"
               accept="image/*"
               className="hidden"
               onChange={handleAvatarChange}
             />
-            <div className="text-xs text-center text-blue-600 cursor-pointer">Alterar foto</div>
+            <div className="text-xs text-center text-blue-600">Alterar foto</div>
           </label>
-          <div>
+          {/* text-center para centralizar o texto (nome e email) */}
+          <div className="text-center">
             <div className="font-semibold">{form.name}</div>
             <div className="text-xs text-slate-500">{form.email}</div>
           </div>
         </div>
-        {/* ...restante do formulário... */}
+        
         <label className="block mb-2">
           <span className="text-sm">Nome</span>
           <input

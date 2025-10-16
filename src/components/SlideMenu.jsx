@@ -23,9 +23,6 @@ export default function SlideMenu({open, onClose}){
         <Link to="/settings/security" onClick={onClose} className="slide-item flex items-center gap-2">
           <FaLock className="w-4 h-4"/> Segurança
         </Link>
-        <Link to="/settings/idioma" onClick={onClose} className="slide-item flex items-center gap-2">
-          <FaLanguage className="w-4 h-4"/> Idioma
-        </Link>
         <Link to="/login" onClick={onClose} className='text-red-600 mt-4 slide-item flex items-center gap-2'>
           <FaSignOutAlt className="w-4 h-4"/> Sair
         </Link>
