@@ -4,8 +4,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#2B6CB0', // azul
-        accent: '#F6E05E',  // amarelo
+        primary: '#2B6CB0', 
+        accent: '#F6E05E',  
       },
       borderRadius: {
         '2xl': '1rem',

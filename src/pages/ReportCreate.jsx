@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 export default function ReportCreate() {
   const navigate = useNavigate();
 
-  // Estados dos campos
+
   const [selectedLocation, setSelectedLocation] = useState("");
   const [selectedArea, setSelectedArea] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -14,7 +14,7 @@ export default function ReportCreate() {
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   
-  // Estado para a mensagem de feedback/erro
+
   const [mensagem, setMensagem] = useState('');
 
   const locations = ["Térreo", "Primeiro andar"];
@@ -46,41 +46,29 @@ export default function ReportCreate() {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    setMensagem(''); // Limpa mensagens anteriores
+    setMensagem(''); 
     
-    // --- 1. VALIDAÇÃO DE CAMPOS OBRIGATÓRIOS ---
-    
-    // Validar Local
+  
     if (!selectedLocation) {
         setMensagem('⚠️ Por favor, selecione o Local.');
         return;
     }
-
-    // Validar Área (depende do Local)
     if (!selectedArea) {
         setMensagem('⚠️ Por favor, selecione a Área.');
         return;
     }
-
-    // Validar Categoria (depende da Área)
     if (!selectedCategory) {
         setMensagem('⚠️ Por favor, selecione a Categoria.');
         return;
     }
-    
-    // Validar "Outros" (se Categoria for "Outros")
     if (selectedCategory === "Outros" && !otherCategory.trim()) {
         setMensagem('⚠️ Por favor, descreva a categoria "Outros".');
         return;
     }
-    
-    // Validar Descrição
     if (!description.trim()) {
         setMensagem('⚠️ A Descrição do problema é obrigatória.');
         return;
     }
-
-    // Se chegou até aqui, todas as validações de campos obrigatórios passaram!
     
     const categoriaFinal = selectedCategory === "Outros" ? otherCategory : selectedCategory;
 
@@ -89,28 +77,22 @@ export default function ReportCreate() {
       selectedArea,
       selectedCategory: categoriaFinal,
       description,
-      image // Imagem é opcional e passa sem validação
+      image 
     };
-    
-    // ------------------------------------
-    // Lógica de Envio (chamada à API, etc.)
-    // ------------------------------------
-
-    // Simulação do envio
     console.log("Enviando dados:", reportData);
     
     setMensagem('🎉 Report enviado com sucesso! Redirecionando...');
 
     setTimeout(() => {
-        // 3. Use navigate() para redirecionar após a lógica de envio
+  
         navigate('/reports'); 
-    }, 1500); // Redireciona após 1.5s para exibir a mensagem de sucesso
+    }, 1000); 
   };
 
-  // Função auxiliar para renderizar selects
+
   const renderSelect = (label, options, placeholder, value, onChange, disabled) => (
     <div className="mb-4">
-      {/* Adicionado o asterisco para indicar campo obrigatório */}
+     
       <label className="block font-medium text-sm mb-1">{label} <span className="text-red-500">*</span></label>
       <select
         className="w-full border rounded-lg p-2 focus:ring focus:ring-blue-300 disabled:bg-gray-100"
@@ -132,14 +114,14 @@ export default function ReportCreate() {
         <FormCard title="Criar Report">
           <form onSubmit={handleSubmit} className="space-y-4"> 
 
-            {/* Mensagem de Feedback/Erro */}
+           
             {mensagem && (
                 <div className={`text-sm p-3 rounded-lg font-medium text-center ${mensagem.startsWith('🎉') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                     {mensagem}
                 </div>
             )}
 
-            {/* Selects encadeados */}
+   
             {renderSelect("Local", locations, "Selecione um local", selectedLocation, setSelectedLocation, false)}
             
             {selectedLocation &&
@@ -150,7 +132,7 @@ export default function ReportCreate() {
               renderSelect("Categoria", categories, "Selecione uma categoria", selectedCategory, setSelectedCategory, false)
             }
 
-            {/* Campo "Outros" */}
+     
             {selectedCategory === "Outros" && (
               <div className="mb-4">
                 <label className="block font-medium text-sm mb-1">Descreva Outros <span className="text-red-500">*</span></label>
@@ -176,7 +158,7 @@ export default function ReportCreate() {
               />
             </div>
 
-            {/* Upload de Imagem (Opcional) */}
+      
             <div>
               <label className="block font-medium text-sm mb-2"> Adicione uma Imagem (Opcional)</label>
               <input
@@ -195,7 +177,7 @@ export default function ReportCreate() {
               )}
             </div>
 
-            {/* Botões */}
+        
             <div className="flex justify-end gap-3 pt-4">
               <button
                 type="reset"
@@ -208,7 +190,7 @@ export default function ReportCreate() {
                   setDescription("")
                   setImage(null)
                   setPreview(null)
-                  setMensagem('') // Limpa a mensagem ao resetar
+                  setMensagem('') 
                 }}
               >
                 Limpar

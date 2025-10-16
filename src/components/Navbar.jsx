@@ -8,7 +8,6 @@ export default function Navbar({ onMenu }) {
     <header className="w-full bg-white shadow-sm">
       <div className="max-w-4xl mx-auto flex items-center justify-between p-4">
         <div className="flex items-center gap-3">
-          {/* Logo que redireciona para a Home */}
           <Link to="/home">
             <img
               src={logo}

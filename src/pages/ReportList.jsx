@@ -2,7 +2,6 @@
 import { Link } from 'react-router-dom'
 
 export default function ReportList() {
-  // 👉 Lista vazia no início
   const [tickets, setTickets] = useState([])
 
   return (
