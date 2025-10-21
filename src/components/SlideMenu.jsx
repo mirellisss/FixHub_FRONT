@@ -1,8 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { FaTicketAlt, FaCog, FaUser, FaLock, FaLanguage, FaSignOutAlt } from 'react-icons/fa';
-
+import { FaTicketAlt, FaCog, FaUser, FaLock, FaLanguage, FaSignOutAlt, FaQuestionCircle } from 'react-icons/fa';
 
 export default function SlideMenu({open, onClose}){
   return (
@@ -23,6 +22,12 @@ export default function SlideMenu({open, onClose}){
         <Link to="/settings/security" onClick={onClose} className="slide-item flex items-center gap-2">
           <FaLock className="w-4 h-4"/> Segurança
         </Link>
+
+        {/* Nova aba de Perguntas Frequentes */}
+        <Link to="/faq" onClick={onClose} className="slide-item flex items-center gap-2">
+          <FaQuestionCircle className="w-4 h-4"/> Perguntas Frequentes
+        </Link>
+
         <Link to="/login" onClick={onClose} className='text-red-600 mt-4 slide-item flex items-center gap-2'>
           <FaSignOutAlt className="w-4 h-4"/> Sair
         </Link>

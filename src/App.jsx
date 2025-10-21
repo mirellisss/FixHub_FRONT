@@ -12,6 +12,8 @@ import AccountInfo from './pages/AccountInfo'
 import Security from './pages/Security'
 import Success from './pages/Success'
 import NotFound from './pages/NotFound'
+import Faq from './pages/Faq';
+import TerminalMap from './pages/TerminalMap'
 
 export default function App(){
   return (
@@ -30,6 +32,8 @@ export default function App(){
         <Route path="settings/security" element={<Security/>} />
         <Route path="success" element={<Success/>} />
         <Route path="*" element={<NotFound/>} />
+        <Route path="/faq" element={<Faq />} />
+        <Route path="/terminal-map" element={<TerminalMap />} />
       </Route>
     </Routes>
   )

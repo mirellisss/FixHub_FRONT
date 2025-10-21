@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import FormCard from '../components/FormCard'
 
 export default function AccountInfo({ name = '', email = '', birthDate = '', phone = '', avatar = '/user.png', onSave, onCancel }) {
@@ -10,6 +10,12 @@ export default function AccountInfo({ name = '', email = '', birthDate = '', pho
     avatar,
   })
   const [preview, setPreview] = useState(avatar)
+  const [isEditing, setIsEditing] = useState(false)
+
+  useEffect(() => {
+    setForm({ name, email, birthDate, phone, avatar })
+    setPreview(avatar)
+  }, [name, email, birthDate, phone, avatar])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -27,87 +33,101 @@ export default function AccountInfo({ name = '', email = '', birthDate = '', pho
 
   const handleSave = () => {
     if (onSave) onSave(form)
+    setIsEditing(false)
   }
 
   const handleCancel = () => {
     if (onCancel) onCancel()
     setForm({ name, email, birthDate, phone, avatar })
     setPreview(avatar)
+    setIsEditing(false)
   }
+
+  const hasData = [name, email, birthDate, phone].some(Boolean) || (avatar && avatar !== '/user.png')
 
   return (
     <div className="py-6">
       <FormCard title="Informações da Conta">
-        {/* MODIFICAÇÃO: flex-col e items-center para centralizar verticalmente */}
-        <div className="flex flex-col items-center gap-4 mb-4">
-          <label className="cursor-pointer flex flex-col items-center">
-            <img src={preview} className="w-20 h-20 rounded-full object-cover mb-1" alt="Avatar do usuário"/>
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleAvatarChange}
-            />
-            <div className="text-xs text-center text-blue-600">Alterar foto</div>
-          </label>
-          {/* text-center para centralizar o texto (nome e email) */}
-          <div className="text-center">
-            <div className="font-semibold">{form.name}</div>
-            <div className="text-xs text-slate-500">{form.email}</div>
+        {!isEditing ? (
+          // Página "em branco" por enquanto; botão "Editar" aparece somente quando houver dados do backend
+          <div className="flex flex-col items-center justify-center py-8 gap-4">
+            <div className="text-slate-400">Informações não carregadas.</div>
+            {hasData && (
+              <button className="btn-accent" type="button" onClick={() => setIsEditing(true)}>Editar</button>
+            )}
           </div>
-        </div>
-        
-        <label className="block mb-2">
-          <span className="text-sm">Nome</span>
-          <input
-            className="input"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            placeholder="Nome"
-            autoComplete="name"
-          />
-        </label>
-        <label className="block mb-2">
-          <span className="text-sm">E-mail</span>
-          <input
-            className="input"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            placeholder="E-mail"
-            type="email"
-            autoComplete="email"
-          />
-        </label>
-        <label className="block mb-2">
-          <span className="text-sm">Data de nascimento</span>
-          <input
-            className="input"
-            name="birthDate"
-            value={form.birthDate}
-            onChange={handleChange}
-            placeholder="Data de nascimento"
-            type="date"
-            autoComplete="bday"
-          />
-        </label>
-        <label className="block mb-4">
-          <span className="text-sm">Telefone</span>
-          <input
-            className="input"
-            name="phone"
-            value={form.phone}
-            onChange={handleChange}
-            placeholder="Telefone"
-            type="tel"
-            autoComplete="tel"
-          />
-        </label>
-        <div className="flex justify-end gap-2">
-          <button className="btn-accent" type="button" onClick={handleSave}>Salvar</button>
-          <button className="btn-primary" type="button" onClick={handleCancel}>Cancelar</button>
-        </div>
+        ) : (
+          <>
+            <div className="flex flex-col items-center gap-4 mb-4">
+              <label className="cursor-pointer flex flex-col items-center">
+                <img src={preview} className="w-20 h-20 rounded-full object-cover mb-1" alt="Avatar do usuário"/>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarChange}
+                />
+                <div className="text-xs text-center text-blue-600">Alterar foto</div>
+              </label>
+              <div className="text-center">
+                <div className="font-semibold">{form.name}</div>
+                <div className="text-xs text-slate-500">{form.email}</div>
+              </div>
+            </div>
+            
+            <label className="block mb-2">
+              <span className="text-sm">Nome</span>
+              <input
+                className="input"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                placeholder="Nome"
+                autoComplete="name"
+              />
+            </label>
+            <label className="block mb-2">
+              <span className="text-sm">E-mail</span>
+              <input
+                className="input"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                placeholder="E-mail"
+                type="email"
+                autoComplete="email"
+              />
+            </label>
+            <label className="block mb-2">
+              <span className="text-sm">Data de nascimento</span>
+              <input
+                className="input"
+                name="birthDate"
+                value={form.birthDate}
+                onChange={handleChange}
+                placeholder="Data de nascimento"
+                type="date"
+                autoComplete="bday"
+              />
+            </label>
+            <label className="block mb-4">
+              <span className="text-sm">Telefone</span>
+              <input
+                className="input"
+                name="phone"
+                value={form.phone}
+                onChange={handleChange}
+                placeholder="Telefone"
+                type="tel"
+                autoComplete="tel"
+              />
+            </label>
+            <div className="flex justify-end gap-2">
+              <button className="btn-accent" type="button" onClick={handleSave}>Salvar</button>
+              <button className="btn-primary" type="button" onClick={handleCancel}>Cancelar</button>
+            </div>
+          </>
+        )}
       </FormCard>
     </div>
   )
