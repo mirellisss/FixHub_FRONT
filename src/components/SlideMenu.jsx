@@ -1,7 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { FaTicketAlt, FaCog, FaUser, FaLock, FaLanguage, FaSignOutAlt, FaQuestionCircle } from 'react-icons/fa';
+import { FaTicketAlt, FaCog, FaUser, FaLock, FaSignOutAlt, FaQuestionCircle, FaBus} from 'react-icons/fa';
+
 
 export default function SlideMenu({open, onClose}){
   return (
@@ -27,6 +28,10 @@ export default function SlideMenu({open, onClose}){
         <Link to="/faq" onClick={onClose} className="slide-item flex items-center gap-2">
           <FaQuestionCircle className="w-4 h-4"/> Perguntas Frequentes
         </Link>
+
+        <a href="https://www.rodoviariadecampinas.com.br/?gad_source=1&gad_campaignid=22494395160&gbraid=0AAAAA-LtzN6rshNI_kQYYwXJoLqTXWWTX&gclid=CjwKCAjw3tzHBhBREiwAlMJoUhVY11GlIh5yH3l9uatBlBt5G--DcUC7pxYiExxnnAOKJk9YP8BVJBoCvVAQAvD_BwE" onClick={onClose} target="_blank" rel="noopener noreferrer" className="slide-item flex items-center gap-2">
+          <FaBus className="w-4 h-4"/> Passagens
+        </a>
 
         <Link to="/login" onClick={onClose} className='text-red-600 mt-4 slide-item flex items-center gap-2'>
           <FaSignOutAlt className="w-4 h-4"/> Sair

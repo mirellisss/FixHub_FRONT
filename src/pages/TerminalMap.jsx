@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './TerminalMap.css';
 
-// --- DADOS INICIAIS E CONSTANTES ---
 const initialPanel = {
   title: 'Clique em um setor para mais detalhes',
   text: 'Use este mapa esquemático para se orientar nos três pavimentos principais do Terminal.',
 };
 
-// --- TASKS_PI (detalhes gerais e administrativos) ---
 export const TASKS_PI = [
   {
     id: 'politica-privacidade',
@@ -29,233 +26,316 @@ export const TASKS_PI = [
 Telefone: (19) 3731-2930 opção 05.
 Você também pode procurar seu pertence online.`,
   },
-  {
-    id: 'sanitarios',
-    name: 'Sanitários e Banhos',
-    detail: `O terminal possui 08 pontos de sanitários, sendo:
-04 comuns – 02 no mezanino e 02 no piso das plataformas.
-04 adaptados para pessoas com deficiência física ou mobilidade reduzida – 02 no mezanino e 02 no piso das plataformas.
-Banhos: Boxes instalados nos sanitários do piso mezanino. Preço: R$ 15,50 (banhos quentes).`,
-  },
-  {
-    id: 'caixa-eletronico',
-    name: 'Caixa Automático',
-    detail: 'O terminal conta com serviço de Banco 24 Horas, disponível no saguão principal.',
-  },
-  {
-    id: 'estacionamento',
-    name: 'Estacionamento',
-    detail: `Localizado no Terminal Rodoviário de Campinas, funcionamento 24 horas, com 307 vagas (12 para deficiente físico e 20 para idoso).
-Tel.: (19) 3731-2930
-Preços: Meia hora: R$ 6,90, 1h: R$ 12,45, 2h: R$ 17,74, 3h: R$ 23,03, 4h: R$ 28,32, 5h: R$ 33,61, 6h: R$ 38,90, 1 diária: R$ 43,79, Mensalista: R$ 211,61, Locatário: R$ 105,80, Cartão: R$ 30,00.
-Para mensalistas e locatários, é necessário realizar um cadastro prévio de forma presencial na Administração (segunda a sexta, das 8h às 17h).
-Formas de Pagamento: Dinheiro, Débito, PIX, Conectar Car, Veloe e Sem Parar.`,
-  },
-  {
-    id: 'acessibilidade',
-    name: 'Acessibilidade',
-    detail: `O terminal dispõe de: 02 Cadeiras de rodas; 04 Sanitários exclusivos p/ deficientes; 04 Escadas rolantes (2 para o mezanino e 2 para as plataformas); 04 Elevadores (2 para o mezanino e 2 para as plataformas); 12 Vagas para deficiente e 20 para idosos no estacionamento; 01 Telefones públicos adaptados.
-Serviço de auxílio gratuito a PCD, mobilidade reduzida e idosos. Possuímos piso tátil e sinalização em Braille.`,
-  },
-  {
-    id: 'guarda-volumes',
-    name: 'Guarda-volumes',
-    detail:
-      'Localizado próximo ao balcão de informações, com funcionamento 24 horas. Preços: R$ 9,30 por volume, período de 08 horas.',
-  },
-  {
-    id: 'informacoes',
-    name: 'Balcão de Informações',
-    detail:
-      'Localizado no saguão do mezanino, com funcionamento 24 horas. Informações por telefone através da Central de atendimento automática (URA) no telefone: (19) 3731-2930.',
-  },
-  {
-    id: 'telefones-publicos',
-    name: 'Telefones Públicos',
-    detail: 'O terminal está provido de 12 aparelhos, sendo que deste total 01 para PCD.',
-  },
-  {
-    id: 'tomadas',
-    name: 'Tomadas e Carregadores',
-    detail:
-      'Dispositivos para Carregadores de Celulares e Laptops disponíveis nas áreas de espera.',
-  },
-  {
-    id: 'encomendas',
-    name: 'Despacho de Encomendas',
-    detail: 'União Express: 0800 779 4990.',
-  },
-  {
-    id: 'fiscalizacao',
-    name: 'Órgãos Fiscalizadores',
-    detail: `ANTT (Agência Nacional de Transportes Terrestres) - Localizada na entrada, Telefone: 0800-610300.
-ARTESP (Agência Reguladora de Transporte do Estado de SP) - Localizada na entrada, Telefone: 0800-7278377.
-EMDEC (Empresa Municipal de Desenvolvimento de Campinas) - Localizada na entrada, Telefone: (19) 3772-4067.`,
-  },
 ];
 
-// --- Dados mock dos setores ---
 const sectorsData = {
   mezanino: [
     {
-      id: 'almocoplaca',
+      id: 'alimentacao',
       name: 'Praça de Alimentação',
-      detail: 'Local com diversas opções de lanchonetes e restaurantes. Acesso por escadas e elevadores.',
-      shops: "McDonald's, Subway, Lanchonete X, Restaurante Y",
+      detail:`
+        Local com diversas opções de lanchonetes e restaurantes. Acesso por escadas e elevadores.,
+       - McDonald's
+       - Subway
+       - Lanchonete X
+       - Restaurante Y`,
     },
     {
       id: 'sanitarios',
       name: 'Sanitários / Banhos',
-      detail: 'Sanitários e Banhos disponíveis.',
-      shops: 'Não aplicável',
+      detail: `O Terminal possui 8 pontos de sanitários:
+- 4 comuns (2 no mezanino e 2 nas plataformas)
+- 4 adaptados para pessoas com deficiência (2 no mezanino e 2 nas plataformas)
+
+Banhos disponíveis nos sanitários do mezanino.
+Preço: R$ 15,50 (banhos quentes)`,
+      shops: '',
     },
     {
-      id: 'servicosmezz',
-      name: 'Serviços Diversos / Informações',
-      detail: 'Área de conveniência, lojas de presentes e Balcão de Informações 24h.',
-      shops: 'Banca de Jornais, Loja de Presentes, Salão de Beleza',
+      id: 'informacoes',
+      name: 'Serviços / Balcão de Informações',
+      detail: `Localizado no saguão do mezanino, com funcionamento 24h.
+Informações por telefone: (19) 3731-2930 (URA automática).
+     - Balcão de Informações
+     - Banca de Jornais
+     - Loja de Presentes`,
     },
   ],
+
   terreo: [
     {
       id: 'bilheterias',
-      name: 'Bilheterias (Geral)',
-      detail: 'Guichês de venda de passagens para diversas empresas de ônibus rodoviário.',
-      shops: 'Viação Cometa, Viação 1001, Viação Expresso, Viação Catarinense',
+      name: 'Bilheterias',
+      detail:
+        `Guichês de venda de passagens de diversas empresas de ônibus rodoviário.
+         - Viação Cometa
+          - Viação 1001
+          - Expresso do Sul
+          - Viação Catarinense
+          - entre outras...`
     },
     {
-      id: 'saguaoprinc',
-      name: 'Saguão Principal / Caixas',
-      detail: 'Área de espera, Caixas Eletrônicos (Banco 24h) e Guarda-volumes.',
-      shops: 'Caixa 24 Horas, Guarda-volumes',
+      id: 'caixa-estacionamento',
+      name: 'Caixa Automático / Estacionamento',
+      detail: `Caixa 24 Horas disponível.
+Estacionamento com 307 vagas (12 PCD e 20 idosos).
+Funcionamento 24h.
+
+Preços:
+- Meia hora: R$ 6,90
+- 1h: R$ 12,45
+- 2h: R$ 17,74
+- 3h: R$ 23,03
+- 4h: R$ 28,32
+- 5h: R$ 33,61
+- 6h: R$ 38,90
+- Diária: R$ 43,79
+- Mensalista: R$ 211,61
+- Locatário: R$ 105,80
+- Cartão de estacionamento: R$ 30,00
+
+Mensalistas e locatários devem realizar cadastro presencial (seg-sex, 8h às 17h).
+
+Formas de pagamento: Dinheiro, Débito, PIX, Conectar Car, Veloe e Sem Parar.`,
     },
     {
-      id: 'acessoext',
-      name: 'Acesso Externo / Estacionamento',
-      detail: 'Saída principal para a rua, estacionamento e órgãos fiscalizadores (ANTT, ARTESP, EMDEC).',
-      shops: 'Não aplicável',
+      id: 'acessibilidade',
+      name: 'Acessibilidade',
+      detail: `O terminal está adaptado para pessoas com deficiência:
+- 2 cadeiras de rodas disponíveis
+- 4 sanitários adaptados
+- 2 escadas rolantes (mezanino) + 2 (plataformas)
+- 2 elevadores para o mezanino + 2 para plataformas
+- 12 vagas PCD e 20 vagas idosos no estacionamento
+- Telefones públicos adaptados
+- Piso tátil, sinalização em Braille e auxílio gratuito até embarque/desembarque.`,
+      shops: '',
+    },
+    {
+      id: 'guarda-volumes',
+      name: 'Guarda-volumes',
+      detail: `Localizado próximo ao balcão de informações, funcionamento 24h.
+Preço: R$ 9,30 por volume (período de 8h).`,
+      shops: '',
     },
   ],
+
   plataformas: [
     {
-      id: 'platformas-geral',
+      id: 'embarque',
       name: 'Plataformas de Embarque',
-      detail: 'Área das baias de ônibus para embarque de passageiros e sanitários.',
-      shops: 'Não aplicável',
-      extraClass: 'tm-plataformas-grande',
+      detail:
+        'Área das baias de ônibus para embarque de passageiros. Possui sanitários comuns e adaptados, além de sinalização tátil.',
+      shops: '',
     },
     {
       id: 'desembarque',
       name: 'Desembarque / Táxi',
-      detail: 'Área destinada à chegada dos ônibus e ponto de táxi.',
-      shops: 'Não aplicável',
-      extraClass: 'tm-desembarque',
+      detail:
+        'Área de chegada dos ônibus e ponto de táxi. Há sanitários e sinalização acessível.',
+      shops: '',
     },
     {
       id: 'administracao',
-      name: 'Administração / AP',
-      detail: 'Setor de administração do terminal e Achados e Perdidos (Atendimento seg-sex).',
-      shops: 'Não aplicável',
+      name: 'Outros',
+      detail: `Setor de administração e Achados e Perdidos (seg-sex, 8h–12h / 13h–17h).
+Telefone: (19) 3731-2930 opção 05.
+
+Órgãos Fiscalizadores:
+- ANTT: 0800-610300
+- ARTESP: 0800-7278377
+- EMDEC: (19) 3772-4067
+- União: Express (0800 779 4990)`
+   
     },
   ],
 };
 
-// --- COMPONENTE PRINCIPAL ---
 export default function TerminalMap({ compact = false }) {
-  const [panel, setPanel] = useState(initialPanel);
-  const [activeId, setActiveId] = useState(null);
-  const [open, setOpen] = useState(!compact);
+  const [openId, setOpenId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    setPanel(initialPanel);
-    setOpen(!compact);
+    // Reset openId if needed, similar to previous panel reset
   }, [compact]);
 
-  // --- Função para clique em setor ---
-  function handleClick(sector) {
-    if (activeId === sector.id) {
-      setActiveId(null);
-      setPanel(initialPanel);
-      return;
-    }
-
-    setActiveId(sector.id);
-
-    // Busca detalhes no TASKS_PI se houver
-    const taskDetail = TASKS_PI.find((t) => t.id === sector.id);
-
-    setPanel({
-      title: `Setor: ${sector.name}`,
-      text: taskDetail ? taskDetail.detail : sector.detail,
-      shopsHTML:
-        !sector.shops || sector.shops === 'Não aplicável' || sector.shops.trim() === ''
-          ? <p>Este setor é de uso operacional ou não possui lojas/serviços detalhados.</p>
-          : (
-            <div>
-              <h4>Lojas e Serviços Encontrados:</h4>
-              <ul className="tm-shops-list">
-                {sector.shops.split(',').map((s, i) => <li key={i}>{s}</li>)}
-              </ul>
-            </div>
-          ),
-    });
+  function toggle(id) {
+    setOpenId((prev) => (prev === id ? null : id));
   }
 
-  // --- Render ---
   const renderFloor = (floorName, sectors) => (
-    <>
+    <section className="tm-floor">
       <h2 className="tm-andar">{floorName}</h2>
-      <div className="tm-layout tm-piso">
-        {sectors.map((s) => (
-          <div
-            key={s.id}
-            className={`tm-setor ${s.extraClass ? s.extraClass : ''} ${
-              activeId === s.id ? 'active' : ''
-            }`}
-            onClick={() => handleClick(s)}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handleClick(s)}
-            aria-pressed={activeId === s.id}
-            aria-label={`Setor ${s.name}, clique para ver detalhes`}
-          >
-            {s.name}
-          </div>
-        ))}
+      <div className="tm-layout">
+        {sectors.map((s) => {
+          const taskDetail = TASKS_PI.find((t) => t.id === s.id);
+          const detail = taskDetail ? taskDetail.detail : s.detail;
+          const title = taskDetail ? taskDetail.name : s.name;
+          return (
+            <article className="tm-item" key={s.id}>
+              <button
+                className="tm-question"
+                aria-expanded={openId === s.id}
+                onClick={() => toggle(s.id)}
+              >
+                <span>{s.name}</span>
+                <span className="chev">{openId === s.id ? "−" : "+"}</span>
+              </button>
+              {openId === s.id && (
+                <div className="tm-answer">
+                  <p>{detail}</p>
+                  {s.shops && s.shops.trim() !== '' && (
+                    <div>
+                      <h4>Lojas e Serviços Encontrados:</h4>
+                      <ul className="tm-shops-list">
+                        {s.shops.split(',').map((shop, i) => (
+                          <li key={i}>{shop.trim()}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+            </article>
+          );
+        })}
       </div>
-    </>
+    </section>
   );
 
   return (
-    <div className="tm-container">
-      {/* Botão Voltar */}
-      <div className="flex justify-start mb-4">
-        <button
-          onClick={() => navigate(-1)}
-          className="bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white px-4 py-2 rounded-lg text-sm font-medium transition-all"
-        >
-          ← Voltar
-        </button>
+    <>
+      <style>{`
+        .tm-container {
+          font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif;
+          background-color: #f8fbff;
+          color: #1e293b;
+          text-align: center;
+          max-width: 960px;
+          margin: 0 auto;
+          padding: 2rem;
+        }
+
+        .tm-container h1 {
+          color: #1e293b;
+          margin-bottom: 1rem;
+          font-size: 1.25rem;
+          font-weight: 600;
+        }
+
+        .tm-andar {
+          color: #2563eb;
+          text-align: left;
+          margin-top: 1.5rem;
+          border-bottom: 2px solid #dbeafe;
+          padding-bottom: 0.5rem;
+          font-weight: 500;
+        }
+
+        .tm-layout {
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+          padding: 1rem;
+          gap: 1rem;
+        }
+
+        .tm-item {
+          border-top: 1px solid #e5e7eb;
+          padding: 12px 0;
+        }
+
+        .tm-question {
+          width: 100%;
+          text-align: left;
+          background: none;
+          border: none;
+          padding: 0;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 16px;
+          cursor: pointer;
+          font-weight: 600;
+        }
+
+        .tm-question .chev {
+          font-weight: 700;
+          margin-left: 12px;
+        }
+
+        .tm-answer {
+          margin-top: 10px;
+          color: #374151;
+        }
+
+        .tm-answer p {
+          margin: 0.5rem 0;
+          font-size: 0.95rem;
+          color: #475569;
+          white-space: pre-line;
+        }
+
+        .tm-shops-list {
+          list-style: none;
+          padding-left: 0;
+          margin-top: 0.75rem;
+        }
+
+        .tm-shops-list li {
+          background: #eff6ff;
+          border-left: 4px solid #2563eb;
+          margin-bottom: 0.5rem;
+          padding: 0.5rem 0.75rem;
+          border-radius: 8px;
+        }
+
+        .tm-detalhes {
+          background: #fff;
+          border: 1px solid #e2e8f0;
+          border-radius: 12px;
+          padding: 1rem;
+          margin-bottom: 1rem;
+          text-align: left;
+          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+        }
+
+        .tm-detalhes h3 {
+          color: #1e3a8a;
+          margin-top: 0;
+          font-size: 1rem;
+          font-weight: 600;
+        }
+
+        .tm-detalhes p {
+          margin: 0.5rem 0;
+          font-size: 0.95rem;
+          color: #475569;
+          white-space: pre-line;
+        }
+      `}</style>
+
+      <div className="tm-container">
+        <div className="flex justify-start mb-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all"
+          >
+            ← Voltar
+          </button>
+        </div>
+
+        <h1>Terminal Rodoviário de Campinas (Dr. Ramos de Azevedo)</h1>
+
+        <div className="tm-detalhes">
+          <h3>Use este mapa esquemático para se orientar nos três pavimentos principais do Terminal.</h3>
+          <p>Clique em um setor para expandir os detalhes.</p>
+        </div>
+
+        {renderFloor('1. Mezanino (Piso Superior) - Alimentação e Informações', sectorsData.mezanino)}
+        {renderFloor('2. Térreo (Nível da Rua) - Bilheterias, Acessos e Serviços', sectorsData.terreo)}
+        {renderFloor('3. Piso das Plataformas (Subsolo) - Embarque e Fiscalização', sectorsData.plataformas)}
       </div>
-
-      <h1>Terminal Rodoviário de Campinas (Dr. Ramos de Azevedo)</h1>
-
-      {/* Painel de Detalhes */}
-      <div id="detalhes-painel" className="tm-detalhes">
-        <h3>{panel.title}</h3>
-        <p>{panel.text}</p>
-        {panel.shopsHTML && typeof panel.shopsHTML === 'string' ? (
-          <div dangerouslySetInnerHTML={{ __html: panel.shopsHTML }} />
-        ) : (
-          panel.shopsHTML
-        )}
-      </div>
-
-      {/* Renderiza os pisos */}
-      {renderFloor('1. Mezanino (Piso Superior) - Alimentação e Lazer', sectorsData.mezanino)}
-      {renderFloor('2. Térreo (Nível da Rua) - Bilheterias e Acessos', sectorsData.terreo)}
-      {renderFloor('3. Piso das Plataformas (Subsolo) - Embarque', sectorsData.plataformas)}
-    </div>
+    </>
   );
 }

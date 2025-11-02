@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { BrowserRouter,Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import Home from './pages/Home'
 import Login from './pages/Login'
@@ -14,6 +14,8 @@ import Success from './pages/Success'
 import NotFound from './pages/NotFound'
 import Faq from './pages/Faq';
 import TerminalMap from './pages/TerminalMap'
+import ForgotPassword from './pages/ForgotPassword'
+import ReportEdit from './pages/ReportEdit'
 
 export default function App(){
   return (
@@ -34,6 +36,8 @@ export default function App(){
         <Route path="*" element={<NotFound/>} />
         <Route path="/faq" element={<Faq />} />
         <Route path="/terminal-map" element={<TerminalMap />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reports/edit/:id" element={<ReportEdit />} />
       </Route>
     </Routes>
   )

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import FormCard from '../components/FormCard';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 export default function ReportCreate() {
   const navigate = useNavigate();
-
 
   const [selectedLocation, setSelectedLocation] = useState("");
   const [selectedArea, setSelectedArea] = useState("");
@@ -13,7 +13,6 @@ export default function ReportCreate() {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
-  
 
   const [mensagem, setMensagem] = useState('');
 
@@ -43,56 +42,79 @@ export default function ReportCreate() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    setMensagem(''); 
-    
-  
+    setMensagem('');
+
+    // Validações
     if (!selectedLocation) {
-        setMensagem('⚠️ Por favor, selecione o Local.');
-        return;
+      setMensagem('⚠️ Por favor, selecione o Local.');
+      return;
     }
     if (!selectedArea) {
-        setMensagem('⚠️ Por favor, selecione a Área.');
-        return;
+      setMensagem('⚠️ Por favor, selecione a Área.');
+      return;
     }
     if (!selectedCategory) {
-        setMensagem('⚠️ Por favor, selecione a Categoria.');
-        return;
+      setMensagem('⚠️ Por favor, selecione a Categoria.');
+      return;
     }
     if (selectedCategory === "Outros" && !otherCategory.trim()) {
-        setMensagem('⚠️ Por favor, descreva a categoria "Outros".');
-        return;
+      setMensagem('⚠️ Por favor, descreva a categoria "Outros".');
+      return;
     }
     if (!description.trim()) {
-        setMensagem('⚠️ A Descrição do problema é obrigatória.');
-        return;
+      setMensagem('⚠️ A Descrição do problema é obrigatória.');
+      return;
     }
-    
+
     const categoriaFinal = selectedCategory === "Outros" ? otherCategory : selectedCategory;
 
+    // Pega o token do localStorage
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      Swal.fire('Erro', 'Usuário não autenticado. Faça login novamente.', 'error');
+      return;
+    }
+
+    // Cria o objeto para enviar ao backend
     const reportData = {
-      selectedLocation,
-      selectedArea,
-      selectedCategory: categoriaFinal,
-      description,
-      image 
+      idUsuario: 1, // ou pegue dinamicamente se tiver
+      andar: selectedLocation,
+      localizacao: categoriaFinal,
+      descricaoLocalizacao: selectedArea,
+      descricaoTicketUsuario: description,
+      imagem: image ? image.name : null
     };
-    console.log("Enviando dados:", reportData);
-    
-    setMensagem('🎉 Report enviado com sucesso! Redirecionando...');
 
-    setTimeout(() => {
-  
-        navigate('/reports'); 
-    }, 1000); 
+    try {
+      const response = await fetch('https://projeto-integrador-fixhub.onrender.com/api/fixhub/tickets', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(reportData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Resposta do servidor:', data);
+
+      Swal.fire('Sucesso', 'Report enviado com sucesso!', 'success');
+      navigate('/reports');
+
+    } catch (error) {
+      console.error('Erro ao enviar report:', error);
+      Swal.fire('Erro', 'Não foi possível enviar o report.', 'error');
+    }
   };
-
 
   const renderSelect = (label, options, placeholder, value, onChange, disabled) => (
     <div className="mb-4">
-     
       <label className="block font-medium text-sm mb-1">{label} <span className="text-red-500">*</span></label>
       <select
         className="w-full border rounded-lg p-2 focus:ring focus:ring-blue-300 disabled:bg-gray-100"
@@ -112,27 +134,18 @@ export default function ReportCreate() {
     <div className="py-6">
       <div className="app-screen">
         <FormCard title="Criar Report">
-          <form onSubmit={handleSubmit} className="space-y-4"> 
+          <form onSubmit={handleSubmit} className="space-y-4">
 
-           
             {mensagem && (
-                <div className={`text-sm p-3 rounded-lg font-medium text-center ${mensagem.startsWith('🎉') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                    {mensagem}
-                </div>
+              <div className={`text-sm p-3 rounded-lg font-medium text-center ${mensagem.startsWith('🎉') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                {mensagem}
+              </div>
             )}
 
-   
             {renderSelect("Local", locations, "Selecione um local", selectedLocation, setSelectedLocation, false)}
-            
-            {selectedLocation &&
-              renderSelect("Área", areas, "Selecione uma área", selectedArea, setSelectedArea, false)
-            }
-            
-            {selectedArea &&
-              renderSelect("Categoria", categories, "Selecione uma categoria", selectedCategory, setSelectedCategory, false)
-            }
+            {selectedLocation && renderSelect("Área", areas, "Selecione uma área", selectedArea, setSelectedArea, false)}
+            {selectedArea && renderSelect("Categoria", categories, "Selecione uma categoria", selectedCategory, setSelectedCategory, false)}
 
-     
             {selectedCategory === "Outros" && (
               <div className="mb-4">
                 <label className="block font-medium text-sm mb-1">Descreva Outros <span className="text-red-500">*</span></label>
@@ -146,7 +159,6 @@ export default function ReportCreate() {
               </div>
             )}
 
-            {/* Descrição */}
             <div>
               <label className="block font-medium text-sm mb-1">Descrição <span className="text-red-500">*</span></label>
               <textarea
@@ -158,7 +170,6 @@ export default function ReportCreate() {
               />
             </div>
 
-      
             <div>
               <label className="block font-medium text-sm mb-2"> Adicione uma Imagem (Opcional)</label>
               <input
@@ -177,7 +188,6 @@ export default function ReportCreate() {
               )}
             </div>
 
-        
             <div className="flex justify-end gap-3 pt-4">
               <button
                 type="reset"
@@ -190,13 +200,13 @@ export default function ReportCreate() {
                   setDescription("")
                   setImage(null)
                   setPreview(null)
-                  setMensagem('') 
+                  setMensagem('')
                 }}
               >
                 Limpar
               </button>
               <button
-                type="submit" 
+                type="submit"
                 className="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 shadow"
               >
                 Enviar

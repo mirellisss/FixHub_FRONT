@@ -4,7 +4,7 @@ import { MapPin } from "lucide-react"
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50">
+    <div className="min-h-[60vh] flex items-center justify-center bg-slate-50 py-6">
       <div className="w-full max-w-md flex flex-col items-center space-y-5">
 
         {/* Card de boas-vindas */}
