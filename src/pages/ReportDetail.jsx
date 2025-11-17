@@ -24,8 +24,8 @@ export default function ReportDetail() {
           {
             method: 'GET',
             headers: {
-              'Authorization': `Bearer ${token}`
-            }
+              Authorization: `Bearer ${token}`,
+            },
           }
         )
 
@@ -44,12 +44,13 @@ export default function ReportDetail() {
     fetchTicket()
   }, [id])
 
-  if (loading) return <div className="text-center mt-10 text-gray-500">Carregando...</div>
-  if (!ticket) return <div className="text-center mt-10 text-gray-500">Nenhum ticket encontrado.</div>
+  if (loading)
+    return <div className="text-center mt-10 text-gray-500">Carregando...</div>
+  if (!ticket)
+    return <div className="text-center mt-10 text-gray-500">Nenhum ticket encontrado.</div>
 
   // Verifica se deve mostrar o bloco de resolução
-  const showResolution =
-    ticket.status === 'CONCLUIDO' || ticket.status === 'REPROVADO'
+  const showResolution = ticket.status === 'CONCLUIDO' || ticket.status === 'REPROVADO'
 
   return (
     <div className="max-w-3xl mx-auto mt-10 bg-white rounded-2xl shadow-lg p-6">
@@ -59,13 +60,16 @@ export default function ReportDetail() {
           Detalhes do Ticket #{ticket.idTicket}
         </h2>
 
-        <button
-          onClick={() => navigate(`/tickets/editar/${ticket.idTicket}`)}
-          className="flex items-center gap-2 px-3 py-2 bg-sky-700 text-white rounded-lg hover:bg-sky-800 transition shadow-sm"
-        >
-          <Edit size={18} />
-          <span>Editar</span>
-        </button>
+        {/* Botão de editar só aparece se o status for PENDENTE */}
+        {ticket.status === 'PENDENTE' && (
+          <button
+            onClick={() => navigate(`/ReportDetail${ticket.idTicket}`)}
+            className="flex items-center gap-2 px-3 py-2 bg-sky-700 text-white rounded-lg hover:bg-sky-800 transition shadow-sm"
+          >
+            <Edit size={18} />
+            <span>Editar</span>
+          </button>
+        )}
       </div>
 
       {/* Descrição */}
@@ -101,6 +105,8 @@ export default function ReportDetail() {
               ? 'border-green-600 bg-green-50 text-green-700'
               : ticket.status === 'REPROVADO'
               ? 'border-red-600 bg-red-50 text-red-700'
+              : ticket.status === 'EM ANDAMENTO'
+              ? 'border-blue-600 bg-blue-50 text-blue-700'
               : 'border-yellow-500 bg-yellow-50 text-yellow-700'
           }`}
         >
@@ -108,33 +114,29 @@ export default function ReportDetail() {
         </div>
       </section>
 
-      {/* Datas de Criação e Edição */}
-      {/* Datas de Criação e Edição */}
+      {/* Datas */}
       <section className="mt-6">
         <h3 className="text-lg font-semibold text-gray-700 mb-2">Datas</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {/* Data de Criação */}
           <div className="bg-gray-50 p-3 rounded-xl border text-gray-600 shadow-sm">
             <span className="font-semibold text-gray-700">Criado em:</span>{' '}
             {new Date(ticket.dataTicket).toLocaleString('pt-BR', {
-              timeZone: 'America/Sao_Paulo'
+              timeZone: 'America/Sao_Paulo',
             })}
           </div>
 
-          {/* Data de Atualização (se existir) */}
           {ticket.dataAtualizacao && (
             <div className="bg-gray-50 p-3 rounded-xl border text-gray-600 shadow-sm">
               <span className="font-semibold text-gray-700">Editado em:</span>{' '}
               {new Date(ticket.dataAtualizacao).toLocaleString('pt-BR', {
-                timeZone: 'America/Sao_Paulo'
+                timeZone: 'America/Sao_Paulo',
               })}
             </div>
           )}
         </div>
       </section>
 
-
-      {/* Informações de Resolução (visível só se CONCLUIDO ou REPROVADO) */}
+      {/* Resolução (somente para CONCLUIDO ou REPROVADO) */}
       {showResolution && (
         <section className="mt-6 transition-opacity duration-500 ease-in">
           <h3 className="text-lg font-semibold text-gray-700 mb-2">

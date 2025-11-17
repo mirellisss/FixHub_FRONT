@@ -39,7 +39,7 @@ export default function Login() {
 
       Swal.fire('Sucesso', 'Login realizado com sucesso!', 'success')
         .then(() => {
-          navigate('/success') // redireciona para a pÃ¡gina protegida
+          navigate('/home') // redireciona para a pÃ¡gina protegida
         })
 
     } catch (error) {

@@ -1,8 +1,7 @@
-// ...existing code...
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Swal from 'sweetalert2'
-import { CheckCircle, AlertCircle, Edit2, Trash2, Loader2 } from 'lucide-react'
+import { CheckCircle, AlertCircle, Edit2, Trash2, Loader2, XCircle } from 'lucide-react'
 
 export default function ReportList() {
   const [tickets, setTickets] = useState([])
@@ -43,7 +42,6 @@ export default function ReportList() {
           throw new Error(`Erro: ${response.status}`)
         }
 
-        // Normaliza para garantir campo id (aceita _id vindo do backend)
         const normalized = Array.isArray(data)
           ? data.map((item) => ({ ...item, id: item.id || item._id }))
           : []
@@ -58,7 +56,6 @@ export default function ReportList() {
     fetchTickets()
   }, [])
 
-  // função utilitária para normalizar texto (remove acentos, junta espaços, lower case)
   const normalize = (s) =>
     s
       ? s
@@ -66,12 +63,9 @@ export default function ReportList() {
           .toLowerCase()
           .normalize('NFD')
           .replace(/[\u0300-\u036f]/g, '')
-          .replace(/[^a-z0-9\s]+/g, ' ')
-          .replace(/\s+/g, ' ')
           .trim()
       : ''
 
-  // Filtra tickets localmente conforme status e pesquisa
   const filteredTickets = tickets.filter((t) => {
     const ticketStatus = normalize(t.status || 'pendente')
     const filterStatus = normalize(statusFilter)
@@ -116,18 +110,7 @@ export default function ReportList() {
         }
       )
 
-      const text = await res.text()
-      let respBody = null
-      try {
-        respBody = text ? JSON.parse(text) : null
-      } catch {
-        respBody = text
-      }
-
-      if (!res.ok) {
-        console.error('Erro ao deletar ticket:', res.status, respBody)
-        throw new Error(`Erro ao deletar: ${res.status}`)
-      }
+      if (!res.ok) throw new Error(`Erro ao deletar: ${res.status}`)
 
       setTickets((prev) => prev.filter((t) => (t.id || t._id) !== id))
       Swal.fire('Removido', 'Ticket excluído com sucesso.', 'success')
@@ -148,18 +131,17 @@ export default function ReportList() {
             </div>
           </div>
 
-          {/* Controles de filtro */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className="border px-3 py-2 rounded-md bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
-              aria-label="Filtrar por status"
             >
               <option value="all">Todos</option>
               <option value="pendente">Pendente</option>
               <option value="em andamento">Em andamento</option>
               <option value="concluido">Concluído</option>
+              <option value="reprovado">Reprovado</option>
             </select>
 
             <div className="flex items-center border rounded-md px-3 py-2 bg-white shadow-sm flex-1 min-w-0">
@@ -168,10 +150,13 @@ export default function ReportList() {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"></path>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"
+                />
               </svg>
               <input
                 type="text"
@@ -179,7 +164,6 @@ export default function ReportList() {
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Pesquisar por local ou descrição..."
                 className="w-full border-0 focus:ring-0 outline-none text-sm"
-                aria-label="Pesquisar tickets"
               />
             </div>
 
@@ -190,7 +174,6 @@ export default function ReportList() {
                 setQuery('')
               }}
               className="px-3 py-2 bg-gray-100 text-sm rounded-md hover:bg-gray-200 shadow-sm"
-              title="Limpar filtros"
             >
               Limpar
             </button>
@@ -211,20 +194,24 @@ export default function ReportList() {
               const ticketId = t.id || t._id
               const statusNorm = normalize(t.status || 'pendente')
 
-              const statusText =
-                statusNorm === 'concluido'
-                  ? 'Concluído'
-                  : statusNorm === 'em andamento'
-                  ? 'Em andamento'
-                  : 'Pendente'
-
-              const StatusIcon = statusNorm === 'concluido' ? CheckCircle : statusNorm === 'em andamento' ? Loader2 : AlertCircle
-              const statusBadgeClass =
-                statusNorm === 'concluido'
-                  ? 'bg-green-100 text-green-800'
-                  : statusNorm === 'em andamento'
-                  ? 'bg-blue-100 text-blue-800'
-                  : 'bg-yellow-100 text-yellow-800'
+              let statusText, StatusIcon, statusBadgeClass
+              if (statusNorm === 'concluido') {
+                statusText = 'Concluído'
+                StatusIcon = CheckCircle
+                statusBadgeClass = 'bg-green-100 text-green-800'
+              } else if (statusNorm === 'em andamento') {
+                statusText = 'Em andamento'
+                StatusIcon = Loader2
+                statusBadgeClass = 'bg-blue-100 text-blue-800'
+              } else if (statusNorm === 'reprovado') {
+                statusText = 'Reprovado'
+                StatusIcon = XCircle
+                statusBadgeClass = 'bg-red-100 text-red-800'
+              } else {
+                statusText = 'Pendente'
+                StatusIcon = AlertCircle
+                statusBadgeClass = 'bg-yellow-100 text-yellow-800'
+              }
 
               return (
                 <div
@@ -233,33 +220,42 @@ export default function ReportList() {
                 >
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                     <Link to={`/reports/${ticketId}`} className="flex-1 min-w-0">
-                      <div className="font-semibold text-sm truncate">{t.localizacao || 'Local não informado'}</div>
+                      <div className="font-semibold text-sm truncate">
+                        {t.localizacao || 'Local não informado'}
+                      </div>
                       <div className="text-xs text-slate-500 mt-1 line-clamp-2">
                         {t.descricaoTicketUsuario || 'Sem descrição'}
                       </div>
                     </Link>
 
                     <div className="flex items-center gap-3">
-                      <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${statusBadgeClass}`}>
+                      <div
+                        className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${statusBadgeClass}`}
+                      >
                         <StatusIcon className="w-4 h-4" />
                         <span>{statusText}</span>
                       </div>
 
-                      <Link
-                        to={`/reports/edit/${ticketId}`}
-                        className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
-                        title="Editar"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </Link>
+                      {/* Botões só aparecem se status for pendente */}
+                      {statusNorm === 'pendente' && (
+                        <>
+                          <Link
+                            to={`/reports/edit/${ticketId}`}
+                            className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
+                            title="Editar"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </Link>
 
-                      <button
-                        onClick={() => deleteTicket(ticketId)}
-                        className="flex items-center gap-1 text-sm text-red-600 hover:text-red-800"
-                        title="Excluir"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                          <button
+                            onClick={() => deleteTicket(ticketId)}
+                            className="flex items-center gap-1 text-sm text-red-600 hover:text-red-800"
+                            title="Excluir"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -280,4 +276,3 @@ export default function ReportList() {
     </div>
   )
 }
-// ...existing code...
